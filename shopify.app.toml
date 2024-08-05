@@ -1,0 +1,38 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "0e08f2fd01b956caffb71eaa2ba088ba"
+name = "crypto-reward-app"
+handle = "crypto-reward-app"
+application_url = "https://nt-dealtime-classes-thumbs.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "testtakewithfood.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "customer_read_draft_orders,customer_read_markets,customer_read_orders,customer_read_store_credit_accounts,customer_write_customers,read_orders,write_orders"
+
+[auth]
+redirect_urls = [
+  "https://nt-dealtime-classes-thumbs.trycloudflare.com/auth/callback",
+  "https://nt-dealtime-classes-thumbs.trycloudflare.com/auth/shopify/callback",
+  "https://nt-dealtime-classes-thumbs.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks"
+
+[app_proxy]
+url = "https://nt-dealtime-classes-thumbs.trycloudflare.com/app/proxy"
+subpath = "crypto-1"
+prefix = "apps"
+
+[pos]
+embedded = false

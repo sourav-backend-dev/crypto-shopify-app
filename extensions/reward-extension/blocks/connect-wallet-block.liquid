@@ -1,0 +1,106 @@
+<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js" defer></script>
+
+<!-- Input fields for email and name -->
+<div class="form-container">
+    <!-- Section Heading -->
+    <h2 class="section-heading">Connect Your Wallet</h2>
+
+    <div class="form-group">
+        <label for="userEmail">Email:</label>
+        <input type="email" id="userEmail" name="userEmail" required>
+    </div>
+    <div class="form-group">
+        <label for="userName">Name:</label>
+        <input type="text" id="userName" name="userName" required>
+    </div>
+
+    <button 
+    id="connect-wallet-button" 
+    style="
+        background-color: {{block.settings.button_color}};
+        color: {{block.settings.button_text_color}};
+        border: 1px {{block.settings.button_text_color}} solid;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        text-align: center;
+    "
+>
+    {{block.settings.button_label}}
+</button>
+    
+    <p id="error-message" class="error-message"></p>
+</div>
+
+<script>
+    document.getElementById('connect-wallet-button').addEventListener('click', async function() {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = ''; // Clear previous errors
+
+        if (window.ethereum) {
+            try {
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+                // Get user email and name
+                const userEmail = document.getElementById('userEmail').value;
+                const userName = document.getElementById('userName').value;
+
+                // Check if email and name are filled
+                if (!userEmail || !userName) {
+                    errorMessage.textContent = 'Please fill in your email and name.';
+                    return;
+                }
+
+                // Display the first account
+                fetch("/apps/crypto-1/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        account: accounts[0],
+                        email: userEmail,
+                        name: userName
+                    })
+                });
+            } catch (error) {
+                console.error('User rejected the request:', error);
+                errorMessage.textContent = 'Connection failed. Please try again.';
+            }
+        } else {
+            errorMessage.textContent = 'MetaMask not detected. Please install MetaMask.';
+        }
+    });
+</script>
+
+{% schema %}
+  {
+      "name": "Connect Wallet",
+      "target": "section",
+      "stylesheet": "connect-wallet.css",
+      "settings":[
+          {
+              "type": "text",
+              "id": "button_label",
+              "label": "Button Label",
+              "default": "Connect Wallet"
+          },
+          {
+              "type": "color",
+              "id": "button_color",
+              "label": "Button Color",
+              "default": "#000000"
+          },
+          {
+              "type": "color",
+              "id": "button_text_color",
+              "label": "Button Text Color",
+              "default": "#FFFFFF"
+          }
+      ]
+  }
+  {% endschema %}
